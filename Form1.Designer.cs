@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Edge_Updater
 {
@@ -88,7 +88,6 @@ namespace Edge_Updater
             this.enfernenToolStripMenuItem6 = new System.Windows.Forms.ToolStripMenuItem();
             this.policyTemplatesDownloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.versionsInfoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.groupBox1.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -658,8 +657,6 @@ namespace Edge_Updater
             // 
             // backgroundWorker1
             // 
-            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
-            this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted_1);
             // 
             // Form1
             // 
@@ -750,7 +747,5 @@ namespace Edge_Updater
         private System.Windows.Forms.ToolStripMenuItem registrierenToolStripMenuItem7;
         private System.Windows.Forms.ToolStripMenuItem enfernenToolStripMenuItem6;
 		private System.Windows.Forms.ToolStripMenuItem policyTemplatesDownloadToolStripMenuItem;
-        private System.ComponentModel.BackgroundWorker backgroundWorker1;
     }
 }
-

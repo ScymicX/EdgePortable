@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Windows.Forms;
 
@@ -129,26 +129,10 @@ namespace Edge_Updater
             key = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\ApplicationAssociationToasts");
             key.SetValue("MSEdgeHTM.PORTABLE_microsoft-edge", 0, Microsoft.Win32.RegistryValueKind.DWord);
             key.Close();
-            key = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("SOFTWARE\\Microsoft\\Windows\\Shell\\Associations\\UrlAssociations\\https\\UserChoice");
-            key.SetValue("ProgId", "MSEdgeHTM.PORTABLE");
-            key.Close();
-            key = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("SOFTWARE\\Microsoft\\Windows\\Shell\\Associations\\UrlAssociations\\http\\UserChoice");
-            key.SetValue("ProgId", "MSEdgeHTM.PORTABLE");
-            key.Close();
+            // Windows requires the user to choose the default browser in Settings.
             try
             {
-                key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", false);
-                if (key.GetValue("ProductName").ToString().Contains("Windows 10"))
-                {
-                    key.Close();
-                    Process process = new Process();
-                    process.StartInfo.FileName = "ms-settings:defaultapps";
-                    process.Start();
-                }
-                else
-                {
-                    key.Close();
-                }
+                Process.Start(new ProcessStartInfo("ms-settings:defaultapps") { UseShellExecute = true });
             }
             catch (Exception ex)
             {
@@ -160,7 +144,6 @@ namespace Edge_Updater
             try
             {
                 Microsoft.Win32.RegistryKey key;
-                Microsoft.Win32.Registry.CurrentUser.DeleteSubKeyTree("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.pdf\\UserChoice", false);
                 Microsoft.Win32.Registry.CurrentUser.DeleteSubKeyTree("SOFTWARE\\Clients\\StartMenuInternet\\Microsoft Edge.PORTABLE\\Capabilities\\FileAssociations", false);
                 Microsoft.Win32.Registry.CurrentUser.DeleteSubKeyTree("SOFTWARE\\Clients\\StartMenuInternet\\Microsoft Edge.PORTABLE\\shell\\open\\command", false);
                 Microsoft.Win32.Registry.CurrentUser.DeleteSubKeyTree("SOFTWARE\\Clients\\StartMenuInternet\\Microsoft Edge.PORTABLE\\shell\\open", false);
@@ -213,14 +196,7 @@ namespace Edge_Updater
                 key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\ApplicationAssociationToasts", true);
                 key.DeleteValue("MSEdgeHTM.PORTABLE_microsoft-edge", false);
                 key.Close();
-                key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\Shell\\Associations\\UrlAssociations\\https\\UserChoice", true);
-                key.DeleteValue("Hash", false);
-                key.DeleteValue("ProgId", false);
-                key.Close();
-                key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\Shell\\Associations\\UrlAssociations\\http\\UserChoice", true);                
-                key.DeleteValue("Hash", false);
-                key.DeleteValue("ProgId", false);
-                key.Close();
+
             }
             catch (Exception ex)
             {
