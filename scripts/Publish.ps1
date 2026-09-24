@@ -5,6 +5,7 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent
+$version = (Get-Content -LiteralPath (Join-Path $root 'Version.txt') -Raw).Trim()
 $destination = Join-Path $root "artifacts/package/$Runtime"
 $contained = $SelfContained.IsPresent.ToString().ToLowerInvariant()
 $projects = @(Get-Item -LiteralPath (Join-Path $root 'Portable Edge (Chromium) Updater.csproj')) + @(Get-ChildItem (Join-Path $root 'Launcher') -Recurse -Filter *.csproj)
@@ -26,7 +27,7 @@ Get-ChildItem -LiteralPath (Join-Path $root 'licenses') -File | Copy-Item -Desti
 New-Item -ItemType Directory -Path (Join-Path $destination 'docs') -Force | Out-Null
 Copy-Item -LiteralPath (Join-Path $root 'docs/MAINTENANCE.md') -Destination (Join-Path $destination 'docs') -Force
 @"
-Portable Edge Updater 2.0
+Portable Edge Updater $version
 Runtime: $Runtime
 Self-contained: $contained
 Built: $([DateTime]::UtcNow.ToString('u'))

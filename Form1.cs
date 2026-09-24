@@ -362,7 +362,7 @@ namespace Edge_Updater
                     }
                     else if (buildversion[i] != instVersion[0])
                     {
-                        button9.Text = Langfile.Texts("Button9UAll");
+                        button9.Text = "Update all";
                         button9.Enabled = true;
                         button9.BackColor = Color.FromArgb(224, 224, 224);
                         if (buttons.Length > 0)
@@ -452,7 +452,7 @@ namespace Edge_Updater
         }
         public void Message1()
         {
-            MessageBox.Show(Langfile.Texts("MeassageVersion"), "Portabel Edge (Chromium) Updater", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            MessageBox.Show("The same version is already installed.", "Portable Edge (Chromium) Updater", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
         private void CheckBox2_CheckedChanged(object sender, EventArgs e)
         {

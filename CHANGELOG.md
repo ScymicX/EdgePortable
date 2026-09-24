@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.0.1 — 2026-09-24
+
+- Make the updater and all nine launchers consistently English, regardless of the
+  Windows display language. Translate menus, options, profile choices and browser
+  registration descriptions; remove the incomplete German/Russian language switching.
+- Keep regional number and date formatting unchanged.
+- Check every updater menu and launcher profile choice under English, Dutch, German
+  and Russian UI cultures in the UI regression tests.
+
 ## 2.0.0 — 2026-09-24
 
 - Fix blank pages in portable Edge installations caused by missing Windows sandbox

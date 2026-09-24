@@ -38,6 +38,7 @@ namespace PortableEdge
 
         public static void Run(string folder, Func<Form> profileDialog, string[] arguments)
         {
+            UiLanguage.UseEnglish();
             try
             {
                 string root = AppContext.BaseDirectory;

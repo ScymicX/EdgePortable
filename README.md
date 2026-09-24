@@ -6,12 +6,13 @@ are SDK-style projects, compatible with VS Code's C# Dev Kit.
 
 ## Download
 
-Get **EdgePortable-v2.0.0-win-x64.zip** from the
+Get **EdgePortable-v2.0.1-win-x64.zip** from the
 [GitHub releases](https://github.com/ScymicX/EdgePortable/releases/latest).
 The Windows x64 release includes the .NET runtime and 7zr.exe. Extract the entire
 archive into a writable folder, then open `Portable Edge (Chromium) Updater.exe`
 to download Edge. After installation, use the generated launcher to start Edge.
 The browser itself is downloaded from Microsoft and is not bundled in this release.
+The updater and launchers use English on every Windows display language.
 
 To upgrade an existing installation, close Edge and the updater, make a backup,
 and extract the release into the existing portable root. Replace any existing root

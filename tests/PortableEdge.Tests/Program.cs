@@ -1,6 +1,8 @@
 using System.Diagnostics;
+using System.Globalization;
 using System.Security.AccessControl;
 using System.Security.Principal;
+using System.Windows.Forms;
 using Edge_Updater;
 using PortableEdge;
 
@@ -11,17 +13,45 @@ if (args.Length == 2 && args[0] == "--ui-smoke")
     {
         try
         {
-            using (var form = new Edge_Updater.Form1())
-                Check(form.Controls.Count > 0, "Updater form and resources load");
-            foreach (string directory in Directory.GetDirectories(Path.Combine(args[1], "Launcher")))
+            foreach (string culture in new[] { "en-US", "nl-NL", "de-DE", "ru-RU" })
             {
-                string name = Path.GetFileName(directory);
-                string dll = Path.Combine(directory, "bin", "Debug", "net10.0-windows", name + ".dll");
-                if (!File.Exists(dll)) continue;
-                var assembly = System.Reflection.Assembly.LoadFrom(dll);
-                var type = assembly.GetTypes().Single(t => t.Name == "Form1");
-                using var form = (System.Windows.Forms.Form)Activator.CreateInstance(type);
-                Check(form.Controls.Count > 0, name + " form and resources load");
+                CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo(culture);
+                CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo(culture);
+                UiLanguage.UseEnglish();
+                Check(CultureInfo.CurrentUICulture.Name == "en-US" && CultureInfo.DefaultThreadCurrentUICulture.Name == "en-US" &&
+                    CultureInfo.CurrentCulture.Name == culture, "English UI with regional formatting preserved: " + culture);
+                using (var form = new Edge_Updater.Form1())
+                {
+                    AssertText(form, "button9", "Install all");
+                    AssertText(form, "button10", "Quit");
+                    AssertText(form, "label10", "Install all x86 and/or x64 versions");
+                    AssertText(form, "checkBox1", "Use a separate folder for each version");
+                    AssertText(form, "checkBox4", "Ignore version check");
+                    AssertText(form, "checkBox5", "Create a desktop shortcut");
+                    var expectedMenus = new HashSet<string> { "Tools", "Version info", "Register", "Remove", "Download policy templates" };
+                    foreach (string channel in new[] { "", " Stable x86", " Stable x64", " Beta x86", " Beta x64", " Developer x86", " Developer x64", " Canary x86", " Canary x64" })
+                        expectedMenus.Add("Edge Chromium" + channel + " as default browser");
+                    var menuTexts = form.Controls.OfType<MenuStrip>().SelectMany(menu => MenuTexts(menu.Items)).ToHashSet();
+                    Check(menuTexts.SetEquals(expectedMenus), "All updater menus are English: " + culture);
+                    Check(form.Controls.Count > 0, "Updater form and resources load: " + culture);
+                }
+                int launchers = 0;
+                foreach (string directory in Directory.GetDirectories(Path.Combine(args[1], "Launcher")))
+                {
+                    string name = Path.GetFileName(directory);
+                    string dll = Path.Combine(directory, "bin", "Debug", "net10.0-windows", name + ".dll");
+                    if (!File.Exists(dll)) throw new FileNotFoundException("Build all launchers before the UI tests.", dll);
+                    var assembly = System.Reflection.Assembly.LoadFrom(dll);
+                    var type = assembly.GetTypes().Single(t => t.Name == "Form1");
+                    using var form = (Form)Activator.CreateInstance(type);
+                    AssertText(form, "radioButton1", "Use one profile for all versions");
+                    AssertText(form, "radioButton2", "Use a separate profile for each version");
+                    AssertText(form, "radioButton3", "Use the standard Edge profile");
+                    AssertText(form, "button1", "OK");
+                    Check(form.Text == name, name + " form, resources and English choices: " + culture);
+                    launchers++;
+                }
+                Check(launchers == 9, "All nine launchers checked: " + culture);
             }
         }
         catch (Exception ex) { failure = ex; }
@@ -171,4 +201,17 @@ static string NormalizeAcl(string sddl)
     // without changing any ACE. Keep every rule, its order, and protection flags.
     descriptor.SetFlags(descriptor.ControlFlags & ~ControlFlags.DiscretionaryAclAutoInherited);
     return descriptor.GetSddlForm(AccessControlSections.Access);
+}
+static void AssertText(Control parent, string name, string expected)
+{
+    var control = parent.Controls.Find(name, true).Single();
+    if (control.Text != expected) throw new Exception($"Unexpected UI text for {name}: {control.Text}");
+}
+static IEnumerable<string> MenuTexts(ToolStripItemCollection items)
+{
+    foreach (ToolStripMenuItem item in items.OfType<ToolStripMenuItem>())
+    {
+        yield return item.Text;
+        foreach (string child in MenuTexts(item.DropDownItems)) yield return child;
+    }
 }

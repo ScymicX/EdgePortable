@@ -17,7 +17,7 @@ namespace Edge_Updater
             key.SetValue("AppUserModelId", "MSEdge.PORTABLE");
             key.SetValue("ApplicationIcon", applicationPath + @"\" + instDir + @"\msedge.exe," + icon);
             key.SetValue("ApplicationName", "Microsoft " + instDir + @" Portable");
-            key.SetValue("ApplicationDescription", "Im Web surfen");
+            key.SetValue("ApplicationDescription", "Browse the web");
             key.SetValue("ApplicationCompany", "Microsoft Corporation");
             key.Close();
             key = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("SOFTWARE\\Classes\\MSEdgeHTM.PORTABLE\\DefaultIcon");
@@ -34,7 +34,7 @@ namespace Edge_Updater
             key.SetValue("AppUserModelId", "MSEdge.PORTABLE");
             key.SetValue("ApplicationIcon", applicationPath + @"\" + instDir + @"\msedge.exe,13");
             key.SetValue("ApplicationName", "Microsoft " + instDir + @" Portable");
-            key.SetValue("ApplicationDescription", "Im Web surfen");
+            key.SetValue("ApplicationDescription", "Browse the web");
             key.SetValue("ApplicationCompany", "Microsoft Corporation");
             key.Close();
             key = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("SOFTWARE\\Classes\\MSEdgePDF.PORTABLE\\DefaultIcon");
@@ -50,7 +50,7 @@ namespace Edge_Updater
             key.SetValue(default, "Microsoft " + instDir + @" Portable");
             key.Close();
             key = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("SOFTWARE\\Clients\\StartMenuInternet\\Microsoft Edge.PORTABLE\\Capabilities");
-            key.SetValue("ApplicationDescription", "Microsoft Edge ist ein Webbrowser, der Websites und Anwendungen blitzschnell ausführt.Er ist schnell, stabil und einfach zu verwenden.Browsen Sie sicherer im Web dank des integrierten Schadsoftware - und Phishing - Schutzes.");
+            key.SetValue("ApplicationDescription", "Browse websites and web applications with Microsoft Edge Portable.");
             key.SetValue("ApplicationIcon", applicationPath + @"\" + instDir + @"\msedge.exe," + icon);
             key.SetValue("ApplicationName", "Microsoft " + instDir + @" Portable");
             key.Close();

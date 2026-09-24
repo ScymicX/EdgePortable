@@ -11,6 +11,7 @@ namespace Edge_Updater
         [STAThread]
         static void Main()
         {
+            PortableEdge.UiLanguage.UseEnglish();
             System.IO.Directory.SetCurrentDirectory(Application.StartupPath);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
