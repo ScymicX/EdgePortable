@@ -92,6 +92,9 @@ try
     Expect<InvalidDataException>(() => EdgeUpdateClient.SelectFullPackage(packages, "x86", "153.0.1.2"), "Wrong architecture rejected");
     var secure = EdgeUpdateClient.GetSecureDownloadUri("http://msedge.f.tlu.dl.delivery.mp.microsoft.com/file?signature=a%2Fb");
     Check(secure.Scheme == "https" && secure.Host == "msedge.sf.tlu.dl.delivery.mp.microsoft.com" && secure.Query == "?signature=a%2Fb", "Microsoft secure CDN host and signature");
+    Check(NormalizeAcl("D:(A;ID;FA;;;SY)") == NormalizeAcl("D:AI(A;ID;FA;;;SY)"), "ACL comparison permits Windows auto-inheritance bookkeeping");
+    Check(NormalizeAcl("D:(A;ID;FA;;;SY)") != NormalizeAcl("D:P(A;ID;FA;;;SY)"), "ACL comparison preserves inheritance protection");
+    Check(NormalizeAcl("D:(A;ID;FA;;;SY)") != NormalizeAcl("D:(A;ID;FR;;;SY)"), "ACL comparison detects changed access rights");
 
     string browser = Path.Combine(root, "Edge");
     string version = Path.Combine(browser, "153.0.1.2");
@@ -160,4 +163,12 @@ static void Expect<T>(Action action, string description) where T : Exception
     try { action(); } catch (T) { Console.WriteLine("PASS: " + description); return; }
     throw new Exception("FAIL: " + description);
 }
-static string Acl(string path) => (Directory.Exists(path) ? (FileSystemSecurity)new DirectoryInfo(path).GetAccessControl() : new FileInfo(path).GetAccessControl()).GetSecurityDescriptorSddlForm(AccessControlSections.Access);
+static string Acl(string path) => NormalizeAcl((Directory.Exists(path) ? (FileSystemSecurity)new DirectoryInfo(path).GetAccessControl() : new FileInfo(path).GetAccessControl()).GetSecurityDescriptorSddlForm(AccessControlSections.Access));
+static string NormalizeAcl(string sddl)
+{
+    var descriptor = new RawSecurityDescriptor(sddl);
+    // Writing a parent's DACL can make Windows set the child's AI bookkeeping flag
+    // without changing any ACE. Keep every rule, its order, and protection flags.
+    descriptor.SetFlags(descriptor.ControlFlags & ~ControlFlags.DiscretionaryAclAutoInherited);
+    return descriptor.GetSddlForm(AccessControlSections.Access);
+}
