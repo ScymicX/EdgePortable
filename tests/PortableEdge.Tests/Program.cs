@@ -104,7 +104,16 @@ try
     var profileBefore = Acl(Path.Combine(browser, "profile"));
     var settingsBefore = Acl(Path.Combine(browser, "Profile.txt"));
     SandboxAccess.Ensure(browser);
-    Check(Acl(Path.Combine(browser, "profile")) == profileBefore && Acl(Path.Combine(browser, "Profile.txt")) == settingsBefore, "Profile permissions untouched");
+    var profileAfter = Acl(Path.Combine(browser, "profile"));
+    var settingsAfter = Acl(Path.Combine(browser, "Profile.txt"));
+    if (profileAfter != profileBefore || settingsAfter != settingsBefore)
+    {
+        Console.WriteLine("Test profile ACL before: " + profileBefore);
+        Console.WriteLine("Test profile ACL after:  " + profileAfter);
+        Console.WriteLine("Test settings ACL before: " + settingsBefore);
+        Console.WriteLine("Test settings ACL after:  " + settingsAfter);
+    }
+    Check(profileAfter == profileBefore && settingsAfter == settingsBefore, "Profile permissions untouched");
     foreach (string sid in new[] { "S-1-15-2-1", "S-1-15-2-2" })
         Check(new FileInfo(Path.Combine(version, "msedge.dll")).GetAccessControl().GetAccessRules(true, true, typeof(SecurityIdentifier))
             .Cast<FileSystemAccessRule>().Any(rule => rule.IdentityReference.Value == sid && rule.AccessControlType == AccessControlType.Allow &&
